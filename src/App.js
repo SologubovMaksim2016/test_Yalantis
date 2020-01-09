@@ -1,65 +1,58 @@
 import React from 'react';
 import axios from 'axios';
+import ApiService from '../src/services/api-service'
  
 export default class PersonList extends React.Component {
 
-
+  apiService = new ApiService();
+  
   state = {
-    people: []
+    people: [],
+    month: ["01","02","03"]
+  }
+  constructor(){
+    super();
+    this.updateUser();
   }
   componentDidMount() {
-    axios.get(`http://yalantis-react-school.herokuapp.com/api/task0/users`)
+   /* axios.get(`http://yalantis-react-school.herokuapp.com/api/task0/users`)
       .then(res => {
-        const people = res.data.map( p => [ p.firstName, p.lastName, p.dob, p.id]); 
+        const resourse = res.data;        
+        const people = resourse.map( p => [ p.firstName, p.lastName, p.dob, p.id]); 
+                
         this.setState({people});
-      })
+      })*/
+  }
+
+  updateUser(){
+    this.apiService.getUsers().then ( (p) => {
+      const people = p.map( p => [ p.firstName, p.lastName, p.dob, p.id]);
+
+      //console.log("TCL: PersonList -> updateUser -> people1", people)
+
+      this.setState({people});
+      
+    });
   }
  
   render() {
     
-    return (   
-     
-      <ol>       
+  return (  // <div>END{console.log("TCL:this.state.people", this.state.people)}</div>
       
-        { this.state.people.map(person => 
+      <ol> 
+        { this.state.month.map( month => {
+  
+         return this.state.people.filter(person => person[2].substr(5,2) === month).map(person =>        
+          
         <li key={person[3]}>
-          {"firstname:    " + person[0] 
+          { "firstname:    " + person[0] 
           +"  lastname:      " + person[1] 
-          + "      date of bird:    " + person[2]}          
-        </li>)}        
+          + "      date of bird:    " + person[2].substr(0,10)}          
+        </li>)
+          })
+        }        
       </ol>
     )
   }
 }
 
-
-
-
-
-
-// import React from 'react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
